@@ -118,7 +118,7 @@ const FALLBACK = [
 // ── СЕЗОНЫ — количество серий по сезонам для каждого аниме ──
 const SEASONS = {
   // Атака Титанов
-  11061: [{n:1,eps:25,year:2013},{n:2,eps:12,year:2017},{n:3,eps:22,year:2018},{n:4,eps:16,year:2020},{n:4.1,eps:12,year:2022,title:'Финал'},{n:4.2,eps:9,year:2023,title:'Финальная часть'}],
+  11061: [{n:1,eps:25,year:2013},{n:2,eps:12,year:2017},{n:3,eps:22,year:2018},{n:4,eps:16,year:2020,title:'Финал часть 1'},{n:5,eps:12,year:2022,title:'Финал часть 2'}],
   // Клинок, рассекающий демонов
   16498: [{n:1,eps:26,year:2019},{n:2,eps:18,year:2021,title:'Квартал развлечений'},{n:3,eps:11,year:2023,title:'Деревня кузнецов'},{n:4,eps:8,year:2024,title:'Столица демонов'}],
   // Моя геройская академия
@@ -741,13 +741,9 @@ function renderEpisodes(a, seasons) {
     + label + ' — серии</div>';
 
   const epCount = season.eps;
-  const showN   = Math.min(epCount, 30);
   let epHtml = '<div class="ep-grid" id="ep-grid-inner">';
-  for (let i = 0; i < showN; i++) {
+  for (let i = 0; i < epCount; i++) {
     epHtml += '<div class="ep-chip" onclick="selectEp(' + (i+1) + ',this)">' + (i+1) + '</div>';
-  }
-  if (epCount > 30) {
-    epHtml += '<div class="ep-more">… ещё ' + (epCount-30) + ' серий</div>';
   }
   epHtml += '</div>';
   epBlock.innerHTML += epHtml;
@@ -764,13 +760,9 @@ function renderEpisodes(a, seasons) {
 }
 
 function renderEpisodesGrid(gridEl, epSel, epCount) {
-  const showN = Math.min(epCount, 30);
   let epHtml = '';
-  for (let i = 0; i < showN; i++) {
+  for (let i = 0; i < epCount; i++) {
     epHtml += '<div class="ep-chip ' + (i===0?'active':'') + '" onclick="selectEp(' + (i+1) + ',this)">' + (i+1) + '</div>';
-  }
-  if (epCount > 30) {
-    epHtml += '<div class="ep-more">… ещё ' + (epCount-30) + ' серий</div>';
   }
   gridEl.innerHTML = epHtml;
   if (epSel) {
@@ -918,6 +910,18 @@ function renderCollBtns(a) {
 function toggleBookmarkMenu() {
   if (!state.user) { requireAuth(); return; }
   const menu = document.getElementById('bookmark-menu');
+  // Обновляем заголовок меню с текущим сезоном
+  const a = state.currentAnime;
+  if (a) {
+    const seasons = SEASONS[a.id];
+    if (seasons && seasons.length > 1 && state.currentSeason) {
+      const s = seasons.find(function(x){return x.n===state.currentSeason;});
+      const menuTitle = document.getElementById('bookmark-menu-title');
+      if (menuTitle && s) {
+        menuTitle.textContent = 'Добавить: ' + (s.title || ('Сезон ' + s.n));
+      }
+    }
+  }
   menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 }
 
@@ -933,6 +937,20 @@ document.addEventListener('click', function(e) {
 async function setBookmark(type) {
   if (!state.user) { requireAuth(); return; }
   const a = state.currentAnime; if (!a) return;
+
+  // Сохраняем с информацией о текущем сезоне
+  const seasons = SEASONS[a.id];
+  if (seasons && seasons.length > 1 && state.currentSeason) {
+    const s = seasons.find(function(x){return x.n===state.currentSeason;});
+    const seasonLabel = s ? (s.title || ('Сезон ' + s.n)) : '';
+    if (seasonLabel) {
+      // Сохраняем сезон в отдельной структуре
+      if (!state.seasonMap) state.seasonMap = {};
+      state.seasonMap[a.id] = {season: state.currentSeason, label: seasonLabel};
+      saveLocal();
+    }
+  }
+
   await addToColl(a.id, type);
   document.getElementById('bookmark-menu').style.display = 'none';
   updateBookmarkBtn(a.id);
@@ -1290,7 +1308,8 @@ function loginAs(user) {
 }
 
 function logout() {
-  state.user=null; state.collMap={}; state.ratings={};
+  state.user=null;
+  // Оценки и закладки сохраняются после выхода:
   try{localStorage.removeItem('kp_session');localStorage.removeItem('kp_token');}catch{}
   updateAuthUI();
   showToast('👋','Вы вышли из аккаунта');
