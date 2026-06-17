@@ -672,7 +672,8 @@ function renderDetailAuthBlocks(a) {
 
 // ── ВСТРОЕННЫЙ ПЛЕЕР ──
 function renderSeasons(a) {
-  const seasons = SEASONS[a.id] || [{n:1, eps: typeof a.eps==='number'?a.eps:12, year:a.year||'', title:''}];
+  // Ищем сезоны по mal_id или по id (для fallback данных где id === mal_id)
+  const seasons = SEASONS[a.mal_id] || SEASONS[a.id] || [{n:1, eps: typeof a.eps==='number'?a.eps:12, year:a.year||'', title:''}];
   const headerEl = document.getElementById('ep-header');
   const gridEl   = document.getElementById('ep-grid');
   const epSel    = document.getElementById('player-ep-select');
@@ -716,7 +717,7 @@ function renderSeasons(a) {
 function selectSeason(animeId, seasonN) {
   state.currentSeason = seasonN;
   state.currentEp = 1;
-  const a = state.db.find(function(x){return x.id===animeId;});
+  const a = state.db.find(function(x){return x.id===animeId || x.mal_id===animeId;});
   if (!a) return;
   // Перерисовываем — сезон теперь выбран
   renderSeasons(a);
@@ -939,7 +940,7 @@ async function setBookmark(type) {
   const a = state.currentAnime; if (!a) return;
 
   // Сохраняем с информацией о текущем сезоне
-  const seasons = SEASONS[a.id];
+  const seasons = SEASONS[a.mal_id] || SEASONS[a.id];
   if (seasons && seasons.length > 1 && state.currentSeason) {
     const s = seasons.find(function(x){return x.n===state.currentSeason;});
     const seasonLabel = s ? (s.title || ('Сезон ' + s.n)) : '';
