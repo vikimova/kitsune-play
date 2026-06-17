@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<link rel="stylesheet" href="style.css?v=12">
+<link rel="stylesheet" href="style.css?v=15">
 </head>
 <body>
 
@@ -40,7 +40,7 @@
   <div class="api-spinner"></div><span id="api-banner-text">Загружаем данные...</span>
 </div>
 
-<!-- ══ ГЛАВНАЯ ══ -->
+<!-- ══ HOME ══ -->
 <div class="page active" id="page-home">
   <div class="hero">
     <div class="hero-glow-a"></div><div class="hero-glow-b"></div>
@@ -89,7 +89,7 @@
   </div>
 </div>
 
-<!-- ══ КАТАЛОГ ══ -->
+<!-- ══ CATALOG ══ -->
 <div class="page" id="page-catalog">
   <div class="catalog-layout">
     <div class="filters-panel">
@@ -135,7 +135,7 @@
   </div>
 </div>
 
-<!-- ══ ДЕТАЛИ ══ -->
+<!-- ══ DETAIL ══ -->
 <div class="page" id="page-detail">
   <div class="detail-back">
     <button class="btn btn-ghost btn-sm" id="back-btn"><i class="ti ti-arrow-left"></i> Назад</button>
@@ -237,7 +237,7 @@
   </div>
 </div>
 
-<!-- ══ РАСПИСАНИЕ ══ -->
+<!-- ══ SCHEDULE ══ -->
 <div class="page" id="page-schedule">
   <div class="section">
     <div class="section-head">
@@ -257,7 +257,7 @@
   </div>
 </div>
 
-<!-- ══ ПРОФИЛЬ ══ -->
+<!-- ══ PROFILE ══ -->
 <div class="page" id="page-profile">
   <div class="profile-layout">
     <div class="profile-sidebar">
@@ -303,7 +303,7 @@
   </div>
 </div>
 
-<!-- ══ АДМИН ══ -->
+<!-- ══ ADMIN ══ -->
 <div class="page" id="page-admin">
   <div class="admin-layout">
     <div class="admin-sidebar">
@@ -402,13 +402,13 @@
   </div>
 </div>
 
-<!-- ══ МОДЕЛЬ АВТОРИЗАЦИИ ══ -->
+<!-- ══ AUTH MODAL ══ -->
 <div class="modal-overlay" id="auth-modal" onclick="if(event.target===this)closeModal('auth-modal')">
   <div class="modal">
     <button class="modal-close" onclick="closeModal('auth-modal')"><i class="ti ti-x"></i></button>
     <div id="login-form">
       <h2>Добро пожаловать</h2>
-      <div class="modal-sub">Войдите для доступа к коллекциям</div>
+
       <div class="field"><label>Логин или Email</label><input type="text" id="login-username" placeholder="username"></div>
       <div class="field"><label>Пароль</label><input type="password" id="login-password" placeholder="••••••••"></div>
       <div class="modal-error" id="login-error"></div>
@@ -431,6 +431,6 @@
 
 <div class="toast" id="toast"><span class="toast-icon" id="toast-icon"></span><span id="toast-msg"></span></div>
 
-<script src="app.js?v=14"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>
